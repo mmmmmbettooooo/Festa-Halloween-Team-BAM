@@ -233,7 +233,7 @@
       </p>
       <div class="cta">
         <button class="button primary" id="share-button" type="button">Compartilhar</button>
-        <a class="button secondary" href="#detalhes">Ver detalhes</a>
+        <a class="button secondary" href="#detalhes" id="details-link">Ver detalhes</a>
       </div>
       <p class="share-status" id="share-status" aria-live="polite"></p>
       <div class="share-manual share-manual-hidden" id="share-manual" aria-hidden="true">
@@ -277,6 +277,7 @@
   </main>
   <script>
     const shareButton = document.getElementById('share-button');
+    const detailsLink = document.getElementById('details-link');
     const detailsHeading = document.getElementById('detalhes');
     const shareManual = document.getElementById('share-manual');
     const shareStatus = document.getElementById('share-status');
@@ -304,6 +305,12 @@
       }
     });
 
+    detailsLink.addEventListener('click', () => {
+      if (window.location.hash === '#detalhes') {
+        detailsHeading.focus();
+      }
+    });
+
     shareLink.addEventListener('click', () => {
       shareLink.select();
     });
@@ -316,11 +323,12 @@
       shareButton.disabled = true;
       hideShareLink();
 
-      const pageUrl = window.location.href.split('#')[0];
+      const pageUrl = new URL(window.location.href);
+      pageUrl.hash = '';
       const shareData = {
         title: 'Festa de Halloween',
         text: 'Olha o convite da nossa Festa de Halloween!',
-        url: pageUrl
+        url: pageUrl.toString()
       };
 
       try {
@@ -341,16 +349,16 @@
         }
 
         if (navigator.clipboard && navigator.clipboard.writeText) {
-          await navigator.clipboard.writeText(pageUrl);
+          await navigator.clipboard.writeText(pageUrl.toString());
           shareStatus.textContent = 'Link copiado. Agora é só enviar para os amigos!';
           hideShareLink();
           return;
         }
 
-        showShareLink(pageUrl);
+        showShareLink(pageUrl.toString());
         shareStatus.textContent = 'Copie o link abaixo e envie para os seus amigos.';
       } catch (error) {
-        showShareLink(pageUrl);
+        showShareLink(pageUrl.toString());
         shareStatus.textContent = 'Não foi possível copiar automaticamente. Copie o link abaixo.';
       } finally {
         shareButton.disabled = false;

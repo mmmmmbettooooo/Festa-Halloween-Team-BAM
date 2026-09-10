@@ -205,13 +205,6 @@
       font-weight: 700;
     }
 
-    .share-manual-hidden {
-      max-height: 0;
-      overflow: hidden;
-      opacity: 0;
-      visibility: hidden;
-    }
-
     @media (max-width: 640px) {
       .hero,
       .content,
@@ -240,7 +233,7 @@
         <a class="button secondary" href="#detalhes" id="details-link">Ver detalhes</a>
       </div>
       <p class="share-status" id="share-status" aria-live="polite"></p>
-      <div class="share-manual share-manual-hidden" id="share-manual" aria-hidden="true">
+      <div class="share-manual" id="share-manual" aria-hidden="true" hidden>
         <p class="share-help" id="share-help">Copie este link e envie para os seus amigos:</p>
         <label class="share-label" for="share-link" id="share-label">Link para compartilhar o convite</label>
         <input class="share-link" id="share-link" type="url" readonly aria-describedby="share-help">
@@ -292,13 +285,13 @@
     const selectLinkButton = document.getElementById('select-link-button');
 
     const hideShareLink = () => {
-      shareManual.classList.add('share-manual-hidden');
+      shareManual.hidden = true;
       shareManual.setAttribute('aria-hidden', 'true');
       shareLink.value = '';
     };
 
     const showShareLink = (value) => {
-      shareManual.classList.remove('share-manual-hidden');
+      shareManual.hidden = false;
       shareManual.setAttribute('aria-hidden', 'false');
       shareLink.value = value;
       shareLink.focus();
@@ -312,8 +305,10 @@
       }
     });
 
-    detailsLink.addEventListener('click', () => {
+    detailsLink.addEventListener('click', (event) => {
       if (window.location.hash === '#detalhes') {
+        event.preventDefault();
+        detailsHeading.scrollIntoView({ behavior: 'smooth', block: 'start' });
         detailsHeading.focus();
       }
     });

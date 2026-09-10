@@ -183,6 +183,13 @@
       color: var(--muted);
     }
 
+    .share-label {
+      display: block;
+      margin-top: 8px;
+      color: var(--text);
+      font-weight: 700;
+    }
+
     @media (max-width: 640px) {
       .hero,
       .content,
@@ -212,7 +219,8 @@
       </div>
       <p class="share-status" id="share-status" aria-live="polite"></p>
       <p class="share-help" id="share-help" hidden>Copie este link e envie para os seus amigos:</p>
-      <input class="share-link" id="share-link" type="url" hidden readonly aria-label="Link para compartilhar o convite" aria-describedby="share-help">
+      <label class="share-label" for="share-link" id="share-label" hidden>Link para compartilhar o convite</label>
+      <input class="share-link" id="share-link" type="url" hidden readonly aria-describedby="share-help">
     </section>
 
     <section class="content" id="detalhes">
@@ -250,10 +258,12 @@
     const shareButton = document.getElementById('share-button');
     const shareStatus = document.getElementById('share-status');
     const shareHelp = document.getElementById('share-help');
+    const shareLabel = document.getElementById('share-label');
     const shareLink = document.getElementById('share-link');
 
     const hideShareLink = () => {
       shareHelp.hidden = true;
+      shareLabel.hidden = true;
       shareLink.hidden = true;
       shareLink.value = '';
     };
@@ -276,26 +286,21 @@
         text: 'Olha o convite da nossa Festa de Halloween!',
         url: pageUrl
       };
-      const shareUrlData = { url: pageUrl };
 
       try {
         if (navigator.share) {
-          if (navigator.canShare && !navigator.canShare(shareUrlData)) {
-            shareStatus.textContent = 'O compartilhamento direto não está disponível. Tentando outra opção...';
-          } else {
-            try {
-              await navigator.share(shareData);
-              shareStatus.textContent = 'Convite compartilhado com sucesso!';
-              hideShareLink();
+          try {
+            await navigator.share(shareData);
+            shareStatus.textContent = 'Convite compartilhado com sucesso!';
+            hideShareLink();
+            return;
+          } catch (error) {
+            if (error && error.name === 'AbortError') {
+              shareStatus.textContent = 'Compartilhamento cancelado.';
               return;
-            } catch (error) {
-              if (error && error.name === 'AbortError') {
-                shareStatus.textContent = 'Compartilhamento cancelado.';
-                return;
-              }
-
-              shareStatus.textContent = 'O compartilhamento direto falhou. Tentando outra opção...';
             }
+
+            shareStatus.textContent = 'O compartilhamento direto falhou. Tentando outra opção...';
           }
         }
 
@@ -306,11 +311,13 @@
           return;
         }
 
+        shareLabel.hidden = false;
         shareHelp.hidden = false;
         shareLink.value = pageUrl;
         shareLink.hidden = false;
         shareStatus.textContent = 'Copie o link abaixo e envie para os seus amigos.';
       } catch (error) {
+        shareLabel.hidden = false;
         shareHelp.hidden = false;
         shareLink.value = pageUrl;
         shareLink.hidden = false;

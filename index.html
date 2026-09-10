@@ -322,11 +322,13 @@
       shareButton.disabled = true;
       hideShareLink();
 
-      const pageUrl = `${window.location.origin}${window.location.pathname}`;
+      const pageUrl = new URL(window.location.href);
+      pageUrl.hash = '';
+      const pageUrlString = pageUrl.toString();
       const shareData = {
         title: 'Festa de Halloween',
         text: 'Olha o convite da nossa Festa de Halloween!',
-        url: pageUrl
+        url: pageUrlString
       };
       const canUseNativeShare = typeof navigator.share === 'function';
       const supportsShareData = !navigator.canShare || navigator.canShare(shareData);
@@ -344,8 +346,7 @@
               return;
             }
 
-            shareStatus.textContent = 'Não foi possível compartilhar pelo navegador agora.';
-            return;
+            shareStatus.textContent = 'Não foi possível compartilhar pelo navegador agora. Tentando outra opção...';
           }
         }
 
@@ -354,16 +355,16 @@
         }
 
         if (navigator.clipboard && navigator.clipboard.writeText) {
-          await navigator.clipboard.writeText(pageUrl);
+          await navigator.clipboard.writeText(pageUrlString);
           shareStatus.textContent = 'Link copiado. Agora é só enviar para os amigos!';
           hideShareLink();
           return;
         }
 
-        showShareLink(pageUrl);
+        showShareLink(pageUrlString);
         shareStatus.textContent = 'Copie o link abaixo e envie para os seus amigos.';
       } catch (error) {
-        showShareLink(pageUrl);
+        showShareLink(pageUrlString);
         shareStatus.textContent = 'Não foi possível copiar automaticamente. Copie o link abaixo.';
       } finally {
         shareButton.disabled = false;

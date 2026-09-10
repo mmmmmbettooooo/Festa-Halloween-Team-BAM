@@ -149,6 +149,12 @@
       opacity: 0.95;
     }
 
+    .button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+      transform: none;
+    }
+
     .footer {
       padding: 0 32px 36px;
       text-align: center;
@@ -270,10 +276,11 @@
         text: 'Olha o convite da nossa Festa de Halloween!',
         url: pageUrl
       };
+      const shareUrlData = { url: pageUrl };
 
       try {
         if (navigator.share) {
-          if (navigator.canShare && !navigator.canShare(shareData)) {
+          if (navigator.canShare && !navigator.canShare(shareUrlData)) {
             shareStatus.textContent = 'O compartilhamento direto não está disponível. Tentando outra opção...';
           } else {
             try {

@@ -200,7 +200,7 @@
         <a class="button secondary" href="#detalhes">Ver detalhes</a>
       </div>
       <p class="share-status" id="share-status" aria-live="polite"></p>
-      <input class="share-link" id="share-link" type="text" hidden readonly>
+      <input class="share-link" id="share-link" type="text" hidden readonly aria-label="Link para compartilhar o convite">
     </section>
 
     <section class="content" id="detalhes">
@@ -247,14 +247,21 @@
         url: pageUrl
       };
 
-      try {
-        if (navigator.share) {
+      if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
+        try {
           await navigator.share(shareData);
           shareStatus.textContent = 'Convite compartilhado com sucesso!';
           shareLink.hidden = true;
           return;
+        } catch (error) {
+          if (error && error.name === 'AbortError') {
+            shareStatus.textContent = 'Compartilhamento cancelado.';
+            return;
+          }
         }
+      }
 
+      try {
         if (navigator.clipboard && navigator.clipboard.writeText) {
           await navigator.clipboard.writeText(pageUrl);
           shareStatus.textContent = 'Link copiado. Agora é só enviar para os amigos!';
@@ -268,12 +275,11 @@
         shareLink.select();
         shareStatus.textContent = 'Copie o link abaixo e envie para os seus amigos.';
       } catch (error) {
-        if (error && error.name === 'AbortError') {
-          shareStatus.textContent = 'Compartilhamento cancelado.';
-          return;
-        }
-
-        shareStatus.textContent = 'Não foi possível compartilhar agora.';
+        shareLink.value = pageUrl;
+        shareLink.hidden = false;
+        shareLink.focus();
+        shareLink.select();
+        shareStatus.textContent = 'Não foi possível copiar automaticamente. Copie o link abaixo.';
       }
     });
   </script>

@@ -238,7 +238,7 @@
       <div class="share-manual share-manual-hidden" id="share-manual">
         <p class="share-help" id="share-help">Copie este link e envie para os seus amigos:</p>
         <label class="share-label" for="share-link" id="share-label">Link para compartilhar o convite</label>
-        <input class="share-link" id="share-link" type="url" readonly aria-describedby="share-help" disabled>
+        <input class="share-link" id="share-link" type="url" readonly aria-describedby="share-help" tabindex="-1">
       </div>
     </section>
 
@@ -281,13 +281,13 @@
 
     const hideShareLink = () => {
       shareManual.classList.add('share-manual-hidden');
-      shareLink.disabled = true;
+      shareLink.tabIndex = -1;
       shareLink.value = '';
     };
 
     const showShareLink = (value) => {
       shareManual.classList.remove('share-manual-hidden');
-      shareLink.disabled = false;
+      shareLink.tabIndex = 0;
       shareLink.value = value;
     };
 
@@ -312,18 +312,22 @@
 
       try {
         if (navigator.share) {
-          try {
-            await navigator.share(shareData);
-            shareStatus.textContent = 'Convite compartilhado com sucesso!';
-            hideShareLink();
-            return;
-          } catch (error) {
-            if (error && error.name === 'AbortError') {
-              shareStatus.textContent = 'Compartilhamento cancelado.';
+          if (navigator.canShare && !navigator.canShare(shareData)) {
+            shareStatus.textContent = 'O compartilhamento direto não está disponível. Tentando outra opção...';
+          } else {
+            try {
+              await navigator.share(shareData);
+              shareStatus.textContent = 'Convite compartilhado com sucesso!';
+              hideShareLink();
               return;
-            }
+            } catch (error) {
+              if (error && error.name === 'AbortError') {
+                shareStatus.textContent = 'Compartilhamento cancelado.';
+                return;
+              }
 
-            shareStatus.textContent = 'O compartilhamento direto falhou. Tentando outra opção...';
+              shareStatus.textContent = 'O compartilhamento direto falhou. Tentando outra opção...';
+            }
           }
         }
 

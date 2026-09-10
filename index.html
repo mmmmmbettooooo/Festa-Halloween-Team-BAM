@@ -149,6 +149,11 @@
       opacity: 0.95;
     }
 
+    .button:focus-visible {
+      outline: 3px solid rgba(255, 211, 163, 0.85);
+      outline-offset: 3px;
+    }
+
     .button:disabled {
       opacity: 0.6;
       cursor: wait;
@@ -190,6 +195,18 @@
       font-weight: 700;
     }
 
+    .share-manual-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
     @media (max-width: 640px) {
       .hero,
       .content,
@@ -218,9 +235,11 @@
         <a class="button secondary" href="#detalhes">Ver detalhes</a>
       </div>
       <p class="share-status" id="share-status" aria-live="polite"></p>
-      <p class="share-help" id="share-help" hidden>Copie este link e envie para os seus amigos:</p>
-      <label class="share-label" for="share-link" id="share-label" hidden>Link para compartilhar o convite</label>
-      <input class="share-link" id="share-link" type="url" hidden readonly aria-describedby="share-help">
+      <div class="share-manual share-manual-hidden" id="share-manual">
+        <p class="share-help" id="share-help">Copie este link e envie para os seus amigos:</p>
+        <label class="share-label" for="share-link" id="share-label">Link para compartilhar o convite</label>
+        <input class="share-link" id="share-link" type="url" readonly aria-describedby="share-help" disabled>
+      </div>
     </section>
 
     <section class="content" id="detalhes">
@@ -256,16 +275,20 @@
   </main>
   <script>
     const shareButton = document.getElementById('share-button');
+    const shareManual = document.getElementById('share-manual');
     const shareStatus = document.getElementById('share-status');
-    const shareHelp = document.getElementById('share-help');
-    const shareLabel = document.getElementById('share-label');
     const shareLink = document.getElementById('share-link');
 
     const hideShareLink = () => {
-      shareHelp.hidden = true;
-      shareLabel.hidden = true;
-      shareLink.hidden = true;
+      shareManual.classList.add('share-manual-hidden');
+      shareLink.disabled = true;
       shareLink.value = '';
+    };
+
+    const showShareLink = (value) => {
+      shareManual.classList.remove('share-manual-hidden');
+      shareLink.disabled = false;
+      shareLink.value = value;
     };
 
     shareLink.addEventListener('click', () => {
@@ -311,16 +334,10 @@
           return;
         }
 
-        shareLabel.hidden = false;
-        shareHelp.hidden = false;
-        shareLink.value = pageUrl;
-        shareLink.hidden = false;
+        showShareLink(pageUrl);
         shareStatus.textContent = 'Copie o link abaixo e envie para os seus amigos.';
       } catch (error) {
-        shareLabel.hidden = false;
-        shareHelp.hidden = false;
-        shareLink.value = pageUrl;
-        shareLink.hidden = false;
+        showShareLink(pageUrl);
         shareStatus.textContent = 'Não foi possível copiar automaticamente. Copie o link abaixo.';
       } finally {
         shareButton.disabled = false;

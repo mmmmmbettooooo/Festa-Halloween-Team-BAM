@@ -206,7 +206,7 @@
       </div>
       <p class="share-status" id="share-status" aria-live="polite"></p>
       <p class="share-help" id="share-help" hidden>Copie este link e envie para os seus amigos:</p>
-      <input class="share-link" id="share-link" type="text" hidden readonly aria-label="Link para compartilhar o convite">
+      <input class="share-link" id="share-link" type="text" hidden readonly aria-label="Link para compartilhar o convite" aria-describedby="share-help">
     </section>
 
     <section class="content" id="detalhes">
@@ -267,6 +267,7 @@
         text: 'Olha o convite da nossa Festa de Halloween!',
         url: pageUrl
       };
+      let showManualFallback = false;
 
       if (navigator.share) {
         if (navigator.canShare && !navigator.canShare(shareData)) {
@@ -279,13 +280,20 @@
           return;
         } catch (error) {
           if (error && error.name === 'AbortError') {
-            shareStatus.textContent = 'Compartilhamento cancelado.';
-            return;
+            shareStatus.textContent = 'Compartilhamento cancelado. Você ainda pode copiar o link abaixo.';
+            showManualFallback = true;
+          } else {
+            shareStatus.textContent = 'O compartilhamento direto falhou. Tentando outra opção...';
           }
+        }
+        }
+      }
 
-          shareStatus.textContent = 'O compartilhamento direto falhou. Tentando outra opção...';
-        }
-        }
+      if (showManualFallback) {
+        shareHelp.hidden = false;
+        shareLink.value = pageUrl;
+        shareLink.hidden = false;
+        return;
       }
 
       try {

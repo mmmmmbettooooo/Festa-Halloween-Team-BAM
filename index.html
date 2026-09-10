@@ -322,16 +322,17 @@
       shareButton.disabled = true;
       hideShareLink();
 
-      const pageUrl = new URL(window.location.href);
-      pageUrl.hash = '';
+      const pageUrl = `${window.location.origin}${window.location.pathname}`;
       const shareData = {
         title: 'Festa de Halloween',
         text: 'Olha o convite da nossa Festa de Halloween!',
-        url: pageUrl.toString()
+        url: pageUrl
       };
+      const canUseNativeShare = typeof navigator.share === 'function';
+      const supportsShareData = !navigator.canShare || navigator.canShare(shareData);
 
       try {
-        if (navigator.share) {
+        if (canUseNativeShare && supportsShareData) {
           try {
             await navigator.share(shareData);
             shareStatus.textContent = 'Convite compartilhado com sucesso!';
@@ -343,21 +344,26 @@
               return;
             }
 
-            shareStatus.textContent = 'O compartilhamento direto falhou. Tentando outra opção...';
+            shareStatus.textContent = 'Não foi possível compartilhar pelo navegador agora.';
+            return;
           }
         }
 
+        if (canUseNativeShare && !supportsShareData) {
+          shareStatus.textContent = 'O compartilhamento direto não está disponível. Tentando outra opção...';
+        }
+
         if (navigator.clipboard && navigator.clipboard.writeText) {
-          await navigator.clipboard.writeText(pageUrl.toString());
+          await navigator.clipboard.writeText(pageUrl);
           shareStatus.textContent = 'Link copiado. Agora é só enviar para os amigos!';
           hideShareLink();
           return;
         }
 
-        showShareLink(pageUrl.toString());
+        showShareLink(pageUrl);
         shareStatus.textContent = 'Copie o link abaixo e envie para os seus amigos.';
       } catch (error) {
-        showShareLink(pageUrl.toString());
+        showShareLink(pageUrl);
         shareStatus.textContent = 'Não foi possível copiar automaticamente. Copie o link abaixo.';
       } finally {
         shareButton.disabled = false;

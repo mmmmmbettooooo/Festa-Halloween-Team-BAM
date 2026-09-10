@@ -202,15 +202,10 @@
     }
 
     .share-manual-hidden {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
+      max-height: 0;
       overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
+      opacity: 0;
+      visibility: hidden;
     }
 
     @media (max-width: 640px) {
@@ -244,7 +239,7 @@
       <div class="share-manual share-manual-hidden" id="share-manual" aria-hidden="true">
         <p class="share-help" id="share-help">Copie este link e envie para os seus amigos:</p>
         <label class="share-label" for="share-link" id="share-label">Link para compartilhar o convite</label>
-        <input class="share-link" id="share-link" type="url" readonly aria-describedby="share-help" tabindex="-1">
+        <input class="share-link" id="share-link" type="url" readonly aria-describedby="share-help">
       </div>
     </section>
 
@@ -290,14 +285,12 @@
     const hideShareLink = () => {
       shareManual.classList.add('share-manual-hidden');
       shareManual.setAttribute('aria-hidden', 'true');
-      shareLink.tabIndex = -1;
       shareLink.value = '';
     };
 
     const showShareLink = (value) => {
       shareManual.classList.remove('share-manual-hidden');
       shareManual.setAttribute('aria-hidden', 'false');
-      shareLink.tabIndex = 0;
       shareLink.value = value;
       shareLink.focus();
       shareLink.select();
@@ -323,9 +316,7 @@
       shareButton.disabled = true;
       hideShareLink();
 
-      const pageUrl = window.location.origin === 'null'
-        ? `${window.location.pathname}${window.location.search}`
-        : `${window.location.origin}${window.location.pathname}${window.location.search}`;
+      const pageUrl = window.location.href.split('#')[0];
       const shareData = {
         title: 'Festa de Halloween',
         text: 'Olha o convite da nossa Festa de Halloween!',

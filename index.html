@@ -331,7 +331,8 @@
         url: pageUrlString
       };
       const canUseNativeShare = typeof navigator.share === 'function';
-      const supportsShareData = !navigator.canShare || navigator.canShare(shareData);
+      const canCheckShareData = typeof navigator.canShare === 'function';
+      const supportsShareData = !canCheckShareData || navigator.canShare(shareData);
 
       try {
         if (canUseNativeShare && supportsShareData) {
@@ -342,11 +343,10 @@
             return;
           } catch (error) {
             if (error && error.name === 'AbortError') {
-              shareStatus.textContent = 'Compartilhamento cancelado.';
-              return;
+              shareStatus.textContent = 'Compartilhamento cancelado. Você ainda pode copiar o link abaixo.';
+            } else {
+              shareStatus.textContent = 'Não foi possível compartilhar pelo navegador agora. Tentando outra opção...';
             }
-
-            shareStatus.textContent = 'Não foi possível compartilhar pelo navegador agora. Tentando outra opção...';
           }
         }
 

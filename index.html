@@ -246,6 +246,10 @@
     const shareHelp = document.getElementById('share-help');
     const shareLink = document.getElementById('share-link');
 
+    shareLink.addEventListener('click', () => {
+      shareLink.select();
+    });
+
     shareButton.addEventListener('click', async () => {
       const pageUrl = window.location.href;
       const shareData = {
@@ -254,7 +258,10 @@
         url: pageUrl
       };
 
-      if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
+      if (navigator.share) {
+        if (navigator.canShare && !navigator.canShare(shareData)) {
+          shareStatus.textContent = 'O compartilhamento direto não está disponível. Tentando outra opção...';
+        } else {
         try {
           await navigator.share(shareData);
           shareStatus.textContent = 'Convite compartilhado com sucesso!';
@@ -268,6 +275,7 @@
           }
 
           shareStatus.textContent = 'O compartilhamento direto falhou. Tentando outra opção...';
+        }
         }
       }
 
@@ -283,15 +291,11 @@
         shareHelp.hidden = false;
         shareLink.value = pageUrl;
         shareLink.hidden = false;
-        shareLink.focus();
-        shareLink.select();
         shareStatus.textContent = 'Copie o link abaixo e envie para os seus amigos.';
       } catch (error) {
         shareHelp.hidden = false;
         shareLink.value = pageUrl;
         shareLink.hidden = false;
-        shareLink.focus();
-        shareLink.select();
         shareStatus.textContent = 'Não foi possível copiar automaticamente. Copie o link abaixo.';
       }
     });

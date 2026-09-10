@@ -246,7 +246,17 @@
     const shareHelp = document.getElementById('share-help');
     const shareLink = document.getElementById('share-link');
 
+    const hideShareLink = () => {
+      shareHelp.hidden = true;
+      shareLink.hidden = true;
+      shareLink.value = '';
+    };
+
     shareLink.addEventListener('click', () => {
+      shareLink.select();
+    });
+
+    shareLink.addEventListener('focus', () => {
       shareLink.select();
     });
 
@@ -265,8 +275,7 @@
         try {
           await navigator.share(shareData);
           shareStatus.textContent = 'Convite compartilhado com sucesso!';
-          shareHelp.hidden = true;
-          shareLink.hidden = true;
+          hideShareLink();
           return;
         } catch (error) {
           if (error && error.name === 'AbortError') {
@@ -283,8 +292,7 @@
         if (navigator.clipboard && navigator.clipboard.writeText) {
           await navigator.clipboard.writeText(pageUrl);
           shareStatus.textContent = 'Link copiado. Agora é só enviar para os amigos!';
-          shareHelp.hidden = true;
-          shareLink.hidden = true;
+          hideShareLink();
           return;
         }
 

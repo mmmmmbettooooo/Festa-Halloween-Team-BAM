@@ -324,7 +324,9 @@
 
       const pageUrl = new URL(window.location.href);
       pageUrl.hash = '';
-      const pageUrlString = pageUrl.toString();
+      const pageUrlString = pageUrl.protocol === 'file:'
+        ? pageUrl.href.split('?')[0]
+        : `${pageUrl.origin}${pageUrl.pathname}`;
       const shareData = {
         title: 'Festa de Halloween',
         text: 'Olha o convite da nossa Festa de Halloween!',

@@ -82,6 +82,12 @@
       padding: 0 32px 32px;
     }
 
+    .section-title {
+      grid-column: 1 / -1;
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
     .card {
       padding: 24px;
       background: rgba(255, 255, 255, 0.04);
@@ -232,7 +238,7 @@
       </p>
       <div class="cta">
         <button class="button primary" id="share-button" type="button">Compartilhar</button>
-        <a class="button secondary" href="#detalhes" id="details-link">Ver detalhes</a>
+        <a class="button secondary" href="#detalhes">Ver detalhes</a>
       </div>
       <p class="share-status" id="share-status" aria-live="polite"></p>
       <div class="share-manual share-manual-hidden" id="share-manual" aria-hidden="true">
@@ -242,7 +248,8 @@
       </div>
     </section>
 
-    <section class="content" id="detalhes" tabindex="-1">
+    <section class="content">
+      <h2 class="section-title" id="detalhes" tabindex="-1">Detalhes da festa</h2>
       <article class="card">
         <h2>📍 Informações</h2>
         <p><span class="highlight">Data:</span> 31 de outubro</p>
@@ -275,8 +282,7 @@
   </main>
   <script>
     const shareButton = document.getElementById('share-button');
-    const detailsLink = document.getElementById('details-link');
-    const detailsSection = document.getElementById('detalhes');
+    const detailsHeading = document.getElementById('detalhes');
     const shareManual = document.getElementById('share-manual');
     const shareStatus = document.getElementById('share-status');
     const shareLink = document.getElementById('share-link');
@@ -299,10 +305,10 @@
 
     hideShareLink();
 
-    detailsLink.addEventListener('click', () => {
-      requestAnimationFrame(() => {
-        detailsSection.focus();
-      });
+    window.addEventListener('hashchange', () => {
+      if (window.location.hash === '#detalhes') {
+        detailsHeading.focus();
+      }
     });
 
     shareLink.addEventListener('click', () => {
@@ -317,7 +323,9 @@
       shareButton.disabled = true;
       hideShareLink();
 
-      const pageUrl = window.location.href;
+      const pageUrl = window.location.origin === 'null'
+        ? `${window.location.pathname}${window.location.search}`
+        : `${window.location.origin}${window.location.pathname}${window.location.search}`;
       const shareData = {
         title: 'Festa de Halloween',
         text: 'Olha o convite da nossa Festa de Halloween!',

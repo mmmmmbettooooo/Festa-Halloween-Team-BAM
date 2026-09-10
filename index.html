@@ -261,42 +261,37 @@
     });
 
     shareButton.addEventListener('click', async () => {
+      shareButton.disabled = true;
+      hideShareLink();
+
       const pageUrl = window.location.href;
       const shareData = {
         title: 'Festa de Halloween',
         text: 'Olha o convite da nossa Festa de Halloween!',
         url: pageUrl
       };
-      let showManualFallback = false;
-
-      if (navigator.share) {
-        if (navigator.canShare && !navigator.canShare(shareData)) {
-          shareStatus.textContent = 'O compartilhamento direto não está disponível. Tentando outra opção...';
-        } else {
-        try {
-          await navigator.share(shareData);
-          shareStatus.textContent = 'Convite compartilhado com sucesso!';
-          hideShareLink();
-          return;
-        } catch (error) {
-          if (error && error.name === 'AbortError') {
-            shareStatus.textContent = 'Compartilhamento cancelado. Você ainda pode copiar o link abaixo.';
-            showManualFallback = true;
-          } else {
-            shareStatus.textContent = 'O compartilhamento direto falhou. Tentando outra opção...';
-          }
-        }
-        }
-      }
-
-      if (showManualFallback) {
-        shareHelp.hidden = false;
-        shareLink.value = pageUrl;
-        shareLink.hidden = false;
-        return;
-      }
 
       try {
+        if (navigator.share) {
+          if (navigator.canShare && !navigator.canShare(shareData)) {
+            shareStatus.textContent = 'O compartilhamento direto não está disponível. Tentando outra opção...';
+          } else {
+            try {
+              await navigator.share(shareData);
+              shareStatus.textContent = 'Convite compartilhado com sucesso!';
+              hideShareLink();
+              return;
+            } catch (error) {
+              if (error && error.name === 'AbortError') {
+                shareStatus.textContent = 'Compartilhamento cancelado.';
+                return;
+              }
+
+              shareStatus.textContent = 'O compartilhamento direto falhou. Tentando outra opção...';
+            }
+          }
+        }
+
         if (navigator.clipboard && navigator.clipboard.writeText) {
           await navigator.clipboard.writeText(pageUrl);
           shareStatus.textContent = 'Link copiado. Agora é só enviar para os amigos!';
@@ -313,6 +308,8 @@
         shareLink.value = pageUrl;
         shareLink.hidden = false;
         shareStatus.textContent = 'Não foi possível copiar automaticamente. Copie o link abaixo.';
+      } finally {
+        shareButton.disabled = false;
       }
     });
   </script>

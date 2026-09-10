@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Festa de Halloween</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #12051f;
+      --card: rgba(30, 14, 48, 0.88);
+      --primary: #ff7b00;
+      --secondary: #b86cff;
+      --text: #fff7f0;
+      --muted: #dbcfe7;
+      --border: rgba(255, 255, 255, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top, rgba(184, 108, 255, 0.3), transparent 35%),
+        linear-gradient(160deg, #08010f 0%, #1c0930 55%, #10051a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .page {
+      width: min(960px, 100%);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    }
+
+    .hero {
+      padding: 56px 32px 40px;
+      text-align: center;
+      background: linear-gradient(180deg, rgba(255, 123, 0, 0.16), rgba(184, 108, 255, 0.08));
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: rgba(255, 123, 0, 0.14);
+      color: #ffd3a3;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+    }
+
+    h1 {
+      margin: 18px 0 14px;
+      font-size: clamp(2.3rem, 5vw, 4.5rem);
+      line-height: 1.05;
+    }
+
+    .hero p {
+      margin: 0 auto;
+      max-width: 620px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      padding: 0 32px 32px;
+    }
+
+    .section-title {
+      grid-column: 1 / -1;
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    .card {
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 1.2rem;
+    }
+
+    .card p,
+    .card li {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .highlight {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .cta {
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 22px;
+      border-radius: 999px;
+      border: 0;
+      cursor: pointer;
+      font: inherit;
+      text-decoration: none;
+      font-weight: 700;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .button.primary {
+      background: linear-gradient(135deg, var(--primary), #ff9f43);
+      color: #1f0f05;
+    }
+
+    .button.secondary {
+      background: rgba(184, 108, 255, 0.14);
+      border: 1px solid rgba(184, 108, 255, 0.4);
+      color: #f3e6ff;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      opacity: 0.95;
+    }
+
+    .button:focus-visible {
+      outline: 3px solid rgba(255, 211, 163, 0.85);
+      outline-offset: 3px;
+    }
+
+    .button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+      transform: none;
+    }
+
+    .footer {
+      padding: 0 32px 36px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .share-status {
+      min-height: 24px;
+      margin-top: 16px;
+      color: #ffd3a3;
+      font-weight: 700;
+    }
+
+    .share-link {
+      width: min(100%, 420px);
+      margin-top: 8px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+    }
+
+    .share-actions {
+      margin-top: 10px;
+    }
+
+    .share-help {
+      margin: 8px 0 0;
+      color: var(--muted);
+    }
+
+    .share-label {
+      display: block;
+      margin-top: 8px;
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    @media (max-width: 640px) {
+      .hero,
+      .content,
+      .footer {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .hero {
+        padding-top: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <span class="badge">Convite especial</span>
+      <h1>Venha para a nossa<br>Festa de Halloween 🎃</h1>
+      <p>
+        Criei esta página para compartilhar com os amigos e deixar todo mundo no clima.
+        Vai ter fantasia, música, doces assustadores e uma noite cheia de diversão.
+      </p>
+      <div class="cta">
+        <button class="button primary" id="share-button" type="button">Compartilhar</button>
+        <a class="button secondary" href="#detalhes" id="details-link">Ver detalhes</a>
+      </div>
+      <p class="share-status" id="share-status" aria-live="polite"></p>
+      <div class="share-manual" id="share-manual" aria-hidden="true" hidden>
+        <p class="share-help" id="share-help">Copie este link e envie para os seus amigos:</p>
+        <label class="share-label" for="share-link" id="share-label">Link para compartilhar o convite</label>
+        <input class="share-link" id="share-link" type="url" readonly aria-describedby="share-help">
+        <div class="share-actions">
+          <button class="button secondary" id="select-link-button" type="button">Selecionar link</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="content">
+      <h2 class="section-title" id="detalhes" tabindex="-1">Detalhes da festa</h2>
+      <article class="card">
+        <h2>📍 Informações</h2>
+        <p><span class="highlight">Data:</span> 31 de outubro</p>
+        <p><span class="highlight">Horário:</span> 19h00</p>
+        <p><span class="highlight">Local:</span> Sua casa ou salão da festa</p>
+      </article>
+
+      <article class="card">
+        <h2>🕸️ O que esperar</h2>
+        <ul>
+          <li>Decoração temática de Halloween</li>
+          <li>Música para animar a noite</li>
+          <li>Concurso de fantasia</li>
+          <li>Doces e comidas especiais</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h2>👻 Mensagem para os amigos</h2>
+        <p>
+          Separe sua melhor fantasia e venha curtir uma noite inesquecível.
+          Confirme sua presença e compartilhe este convite com a galera.
+        </p>
+      </article>
+    </section>
+
+    <p class="footer">
+      Edite os detalhes da data, horário e local para deixar a página com a sua cara.
+    </p>
+  </main>
+  <script>
+    const shareButton = document.getElementById('share-button');
+    const detailsLink = document.getElementById('details-link');
+    const detailsHeading = document.getElementById('detalhes');
+    const shareManual = document.getElementById('share-manual');
+    const shareStatus = document.getElementById('share-status');
+    const shareLink = document.getElementById('share-link');
+    const selectLinkButton = document.getElementById('select-link-button');
+
+    const hideShareLink = () => {
+      shareManual.hidden = true;
+      shareManual.setAttribute('aria-hidden', 'true');
+      shareLink.value = '';
+    };
+
+    const showShareLink = (value) => {
+      shareManual.hidden = false;
+      shareManual.setAttribute('aria-hidden', 'false');
+      shareLink.value = value;
+      shareLink.focus();
+    };
+
+    hideShareLink();
+
+    window.addEventListener('hashchange', () => {
+      if (window.location.hash === '#detalhes') {
+        detailsHeading.focus();
+      }
+    });
+
+    detailsLink.addEventListener('click', (event) => {
+      if (window.location.hash === '#detalhes') {
+        event.preventDefault();
+        detailsHeading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        detailsHeading.focus();
+      }
+    });
+
+    selectLinkButton.addEventListener('click', () => {
+      shareLink.focus();
+      shareLink.select();
+    });
+
+    shareButton.addEventListener('click', async () => {
+      shareButton.disabled = true;
+      hideShareLink();
+
+      const pageUrl = new URL(window.location.href);
+      pageUrl.hash = '';
+      const pageUrlString = pageUrl.protocol === 'file:'
+        ? pageUrl.href.split('?')[0]
+        : `${pageUrl.origin}${pageUrl.pathname}`;
+      const shareData = {
+        title: 'Festa de Halloween',
+        text: 'Olha o convite da nossa Festa de Halloween!',
+        url: pageUrlString
+      };
+      const canUseNativeShare = typeof navigator.share === 'function';
+      const canCheckShareData = typeof navigator.canShare === 'function';
+      const supportsShareData = !canCheckShareData || navigator.canShare(shareData);
+
+      try {
+        if (canUseNativeShare && supportsShareData) {
+          try {
+            await navigator.share(shareData);
+            shareStatus.textContent = 'Convite compartilhado com sucesso!';
+            hideShareLink();
+            return;
+          } catch (error) {
+            if (error && error.name === 'AbortError') {
+              shareStatus.textContent = 'Compartilhamento cancelado. Você ainda pode copiar o link abaixo.';
+            } else {
+              shareStatus.textContent = 'Não foi possível compartilhar pelo navegador agora. Tentando outra opção...';
+            }
+          }
+        }
+
+        if (canUseNativeShare && !supportsShareData) {
+          shareStatus.textContent = 'O compartilhamento direto não está disponível. Tentando outra opção...';
+        }
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(pageUrlString);
+          shareStatus.textContent = 'Link copiado. Agora é só enviar para os amigos!';
+          hideShareLink();
+          return;
+        }
+
+        showShareLink(pageUrlString);
+        shareStatus.textContent = 'Copie o link abaixo e envie para os seus amigos.';
+      } catch (error) {
+        showShareLink(pageUrlString);
+        shareStatus.textContent = 'Não foi possível copiar automaticamente. Copie o link abaixo.';
+      } finally {
+        shareButton.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
